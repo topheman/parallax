@@ -350,6 +350,9 @@
 
   Plugin.prototype.initialise = function() {
 
+    // Add mode data attribute to context.
+    this.$context.attr('data-mode', this.orientationSupport ? 'orientation' : 'cursor');
+
     // Configure Styles
     if (this.$context.css('position') === 'static') {
       this.$context.css({
@@ -584,8 +587,14 @@
 
   Plugin.prototype.onDeviceOrientation = function(event) {
 
-    // Validate environment and event properties.
-    if (!this.desktop && event.beta !== null && event.gamma !== null) {
+    // Update Orientation Support Flag
+    if (event.beta === null || event.gamma === null) {
+      this.disable();
+      this.orientationSupport = false;
+      this.$context.attr('data-mode', this.orientationSupport ? 'orientation' : 'cursor');
+      this.enable();
+      return false;
+    }
 
       // Set orientation status.
       this.orientationStatus = 1;
