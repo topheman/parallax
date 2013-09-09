@@ -22,7 +22,11 @@
     scalarX: 10.0,
     scalarY: 10.0,
     frictionX: 0.1,
-    frictionY: 0.1
+    frictionY: 0.1,
+    headtrackr: false,
+    headtrackrDisplayVideo: false,
+    headtrackrScalarX: 3,
+    headtrackrScalarY: 3
   };
 
   function Parallax(element, options) {
@@ -42,7 +46,11 @@
       scalarX: this.data(this.element, 'scalar-x'),
       scalarY: this.data(this.element, 'scalar-y'),
       frictionX: this.data(this.element, 'friction-x'),
-      frictionY: this.data(this.element, 'friction-y')
+      frictionY: this.data(this.element, 'friction-y'),
+      headtrackr: this.data(this.element, 'headtrackr'),
+      headtrackrDisplayVideo: this.data(this.element, 'headtrackr-display-video'),
+      headtrackrScalarX: this.data(this.element, 'headtrackr-scalar-x'),
+      headtrackrScalarY: this.data(this.element, 'headtrackr-scalar-y')
     };
 
     // Delete Null Data Values
@@ -83,6 +91,7 @@
     this.vy = 0;
 
     // Callbacks
+    this.onFaceTracking = this.onFaceTracking.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onDeviceOrientation = this.onDeviceOrientation.bind(this);
     this.onOrientationTimer = this.onOrientationTimer.bind(this);
@@ -190,6 +199,62 @@
   Parallax.prototype.transform2DSupport = Parallax.prototype.transformSupport('2D');
   Parallax.prototype.transform3DSupport = Parallax.prototype.transformSupport('3D');
 
+    Parallax.prototype.launchHeadtrackr = function() {
+      
+      if(typeof headtrackr === "undefined"){
+        throw new Error("To use the headtrackr feature, you need to include the headtrakr.js or headtrackr.min.js script before the parallax one");
+      }
+      
+      var inputVideo = document.createElement('video'),
+          self;
+  
+      //add the mousemove listener while connecting the camera
+      //we'll remove it when the face is detected to plug trackr
+      //then readd it when the trackr fails
+      window.addEventListener('mousemove', this.onMouseMove);
+  
+      inputVideo.autoplay = true;
+      inputVideo.loop = true;
+      inputVideo.style.display = "none";
+      var canvasInput = document.createElement('canvas');
+      //@todo add possibility to pass a canvas element as an argument
+      if(this.headtrackrDisplayVideo){
+        canvasInput.style.display = "block";
+        canvasInput.style.position = "absolute";
+        canvasInput.style.bottom = "0px";
+        canvasInput.style.right = "0px";
+      }
+      else{
+        canvasInput.style.display = "none";          
+      }
+      canvasInput.width = "320";
+      canvasInput.height = "240";
+      document.getElementsByTagName('body')[0].appendChild(inputVideo);
+      document.getElementsByTagName('body')[0].appendChild(canvasInput);
+      this.htrackr = new headtrackr.Tracker();
+      this.htrackr.init(inputVideo, canvasInput);
+      this.htrackr.start();
+      this.htrackr.canvasInputInfos = {
+        ww : canvasInput.width,
+        wh : canvasInput.height,
+        hw : canvasInput.width / 2,
+        hh : canvasInput.height / 2
+      };
+      
+      self = this;
+      document.addEventListener('headtrackrStatus', function(e){
+        console.log(e.status,e.type,e.timeStamp);
+        if(e.status === "found"){
+          window.removeEventListener('mousemove', self.onMouseMove);
+          document.addEventListener("facetrackingEvent", self.onFaceTracking, false);
+        }
+        else if(e.status === "redetecting"){
+          window.addEventListener('mousemove', self.onMouseMove);
+          document.removeEventListener("facetrackingEvent", self.onFaceTracking, false);
+        }
+      });
+  };
+
   Parallax.prototype.initialise = function() {
 
     // Configure Context Styles
@@ -215,6 +280,9 @@
     }
 
     // Setup
+    if(this.headtrackr === true){
+        this.launchHeadtrackr();
+    }
     this.updateDimensions();
     this.enable();
     this.queueCalibration(this.calibrationDelay);
@@ -243,7 +311,7 @@
   Parallax.prototype.enable = function() {
     if (!this.enabled) {
       this.enabled = true;
-      if (this.orientationSupport) {
+      if (this.headtrackr === false && this.orientationSupport) {
         this.portrait = null;
         window.addEventListener('deviceorientation', this.onDeviceOrientation);
         setTimeout(this.onOrientationTimer, this.supportDelay);
@@ -251,7 +319,12 @@
         this.cx = 0;
         this.cy = 0;
         this.portrait = false;
-        window.addEventListener('mousemove', this.onMouseMove);
+        if(!this.htrackr){
+          window.addEventListener('mousemove', this.onMouseMove);
+        }
+        else{
+          document.addEventListener("facetrackingEvent", this.onFaceTracking, false);
+        }
       }
       window.addEventListener('resize', this.onWindowResize);
       this.raf = requestAnimationFrame(this.onAnimationFrame);
@@ -261,10 +334,15 @@
   Parallax.prototype.disable = function() {
     if (this.enabled) {
       this.enabled = false;
-      if (this.orientationSupport) {
+      if (this.headtrackr === false && this.orientationSupport) {
         window.removeEventListener('deviceorientation', this.onDeviceOrientation);
       } else {
-        window.removeEventListener('mousemove', this.onMouseMove);
+        if(!this.htrackr){
+          window.removeEventListener('mousemove', this.onMouseMove);
+        }
+        else{
+          document.removeEventListener("facetrackingEvent", this.onFaceTracking, false);
+        }
       }
       window.removeEventListener('resize', this.onWindowResize);
       cancelAnimationFrame(this.raf);
@@ -420,6 +498,16 @@
     // Calculate Input
     this.ix = (event.pageX - this.hw) / this.hw;
     this.iy = (event.pageY - this.hh) / this.hh;
+  };
+  
+  Parallax.prototype.onFaceTracking = function(event) {
+    
+    // Calculate Input
+    if(event.detection === "CS"){
+      this.ix = -this.headtrackrScalarX*(event.x - this.htrackr.canvasInputInfos.hw) / this.htrackr.canvasInputInfos.hw;
+      this.iy = this.headtrackrScalarY*(event.y - this.htrackr.canvasInputInfos.hh) / this.htrackr.canvasInputInfos.hh;
+    }
+      
   };
 
   // Expose Parallax

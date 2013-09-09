@@ -149,6 +149,28 @@ $scene.parallax('scalar', 2, 8);
 $scene.parallax('friction', 0.2, 0.8);
 ```
 
+###Headtracking support
+
+Use Parallax.js just as you would. But rather than devicemotion, use headtracking with your webcam (based on the [headtrackr.js](https://github.com/auduno/headtrackr) library).
+
+Don't forget to insert the headtrackr.js script in your page.
+
+You can test the headtracking version of the simple demo here :
+
+* [with Parallax](https://rawgithub.com/topheman/parallax/master/examples/simple.headtrackr.html)
+* [with the Parallax jQuery plugin](https://rawgithub.com/topheman/parallax/master/examples/jquery.headtrackr.html)
+
+This is a first draft for the headtracking support.
+
+####Headtracking behaviours
+
+| Behavior                   | Values              | Description                                                                                                                                                      |
+| -------------------------- | ------------------- | -----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `headtrackr`               | `true` or `false`   | Activates headtracking in parallax (you will be asked to allow the access to your webcam) - it disables devicemotion events and uses mouse if headtracking fails |              
+| `headtrackr-display-video` | `true` or `false`   | Specifies whether or not to display the webcam video stream (false by default) todo : let the user provide a video tag so that he can style it                   |
+| `headtrackr-scalar-x`      | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-x)                                                                     |
+| `headtrackr-scalar-y`      | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-y)                                                                     |
+
 ## iOS
 
 If you are writing a **native iOS application** and would like to use **parallax.js**
