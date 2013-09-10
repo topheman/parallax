@@ -25,6 +25,7 @@
     frictionY: 0.1,
     headtrackr: false,
     headtrackrDisplayVideo: false,
+    headtrackrDebugView: false,
     headtrackrScalarX: 3,
     headtrackrScalarY: 3
   };
@@ -49,6 +50,7 @@
       frictionY: this.data(this.element, 'friction-y'),
       headtrackr: this.data(this.element, 'headtrackr'),
       headtrackrDisplayVideo: this.data(this.element, 'headtrackr-display-video'),
+      headtrackrDebugView: this.data(this.element, 'headtrackr-debug-view'),
       headtrackrScalarX: this.data(this.element, 'headtrackr-scalar-x'),
       headtrackrScalarY: this.data(this.element, 'headtrackr-scalar-y')
     };
@@ -206,6 +208,11 @@
       }
       
       var inputVideo = document.createElement('video'),
+          canvasInput = document.createElement('canvas'),
+          canvasDebug = null,
+          videoWidth = "320",
+          videoHeight = "240",
+          headtrackrOptions = {},
           self;
   
       //add the mousemove listener while connecting the camera
@@ -216,22 +223,43 @@
       inputVideo.autoplay = true;
       inputVideo.loop = true;
       inputVideo.style.display = "none";
-      var canvasInput = document.createElement('canvas');
-      //@todo add possibility to pass a canvas element as an argument
-      if(this.headtrackrDisplayVideo){
-        canvasInput.style.display = "block";
-        canvasInput.style.position = "absolute";
-        canvasInput.style.bottom = "0px";
-        canvasInput.style.right = "0px";
+      inputVideo.width = videoWidth;
+      inputVideo.height = videoHeight;
+      
+      canvasInput.style.position = "absolute";
+      canvasInput.style.bottom = "0px";
+      canvasInput.style.right = "0px";
+      canvasInput.width = videoWidth;
+      canvasInput.height = videoHeight;
+      
+      if(this.headtrackrDisplayVideo === true){
+        canvasInput.style.display = "block"; 
+        if(this.headtrackrDebugView === true){
+          canvasDebug = document.createElement('canvas');
+          canvasDebug.style.display = "block";
+          canvasDebug.style.position = "absolute";
+          canvasDebug.style.bottom = "0px";
+          canvasDebug.style.right = "0px";
+          canvasDebug.width = videoWidth;
+          canvasDebug.height = videoHeight;
+          headtrackrOptions.calcAngles = true;
+        }
       }
       else{
+        this.headtrackrDebugView = false;
         canvasInput.style.display = "none";          
       }
-      canvasInput.width = "320";
-      canvasInput.height = "240";
+      
+      this.htrackr = new headtrackr.Tracker(headtrackrOptions);
+      
       document.getElementsByTagName('body')[0].appendChild(inputVideo);
       document.getElementsByTagName('body')[0].appendChild(canvasInput);
-      this.htrackr = new headtrackr.Tracker();
+      if(canvasDebug !== null){
+        document.getElementsByTagName('body')[0].appendChild(canvasDebug);
+        this.htrackr.canvasDebug = canvasDebug;
+        this.htrackr.ctxDebug = canvasDebug.getContext('2d');
+      }
+      
       this.htrackr.init(inputVideo, canvasInput);
       this.htrackr.start();
       this.htrackr.canvasInputInfos = {
@@ -506,6 +534,15 @@
     if(event.detection === "CS"){
       this.ix = -this.headtrackrScalarX*(event.x - this.htrackr.canvasInputInfos.hw) / this.htrackr.canvasInputInfos.hw;
       this.iy = this.headtrackrScalarY*(event.y - this.htrackr.canvasInputInfos.hh) / this.htrackr.canvasInputInfos.hh;
+      if(this.headtrackrDebugView === true){
+        this.htrackr.canvasDebug.width = this.htrackr.canvasDebug.width;
+        this.htrackr.ctxDebug.translate(event.x, event.y)
+        this.htrackr.ctxDebug.rotate(event.angle-(Math.PI/2));
+        this.htrackr.ctxDebug.strokeStyle = "#00CC00";
+        this.htrackr.ctxDebug.strokeRect((-(event.width/2)) >> 0, (-(event.height/2)) >> 0, event.width, event.height);
+        this.htrackr.ctxDebug.rotate((Math.PI/2)-event.angle);
+        this.htrackr.ctxDebug.translate(-event.x, -event.y);
+      }
     }
       
   };

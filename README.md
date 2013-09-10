@@ -170,6 +170,7 @@ This is a first draft for the headtracking support.
 | `headtrackr-display-video` | `true` or `false`   | Specifies whether or not to display the webcam video stream (false by default) todo : let the user provide a video tag so that he can style it                   |
 | `headtrackr-scalar-x`      | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-x)                                                                     |
 | `headtrackr-scalar-y`      | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-y)                                                                     |
+| `headtrackr-debug-view`    | `true` or `false`   | Adds a box on the video to show what the tracker is capturing of your face                                                                                       |
 
 ## iOS
 
