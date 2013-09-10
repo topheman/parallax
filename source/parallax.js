@@ -27,7 +27,8 @@
     headtrackrDisplayVideo: false,
     headtrackrDebugView: false,
     headtrackrScalarX: 3,
-    headtrackrScalarY: 3
+    headtrackrScalarY: 3,
+    headtrackrScriptLocation: null
   };
 
   function Parallax(element, options) {
@@ -52,7 +53,8 @@
       headtrackrDisplayVideo: this.data(this.element, 'headtrackr-display-video'),
       headtrackrDebugView: this.data(this.element, 'headtrackr-debug-view'),
       headtrackrScalarX: this.data(this.element, 'headtrackr-scalar-x'),
-      headtrackrScalarY: this.data(this.element, 'headtrackr-scalar-y')
+      headtrackrScalarY: this.data(this.element, 'headtrackr-scalar-y'),
+      headtrackrScriptLocation: this.data(this.element, 'headtrackr-script-location')
     };
 
     // Delete Null Data Values
@@ -204,9 +206,26 @@
     Parallax.prototype.launchHeadtrackr = function() {
       
       if(typeof headtrackr === "undefined"){
-        throw new Error("To use the headtrackr feature, you need to include the headtrakr.js or headtrackr.min.js script before the parallax one");
+        if(this.headtrackrScriptLocation !== null){
+          var headTrackrScript = document.createElement('script'),
+              self = this;
+          headTrackrScript.onload = function(script){
+            if(typeof headtrackr !== "undefined"){
+              self.launchHeadtrackr();
+            }
+            else{
+              throw new Error("Wrong path to headtrackr script");
+            }
+          };
+          headTrackrScript.src = this.headtrackrScriptLocation;
+          document.getElementsByTagName('body')[0].appendChild(headTrackrScript);
+          return false;
+        }
+        else{
+          throw new Error("To use the headtrackr feature, you need to include the headtrakr.js or headtrackr.min.js script before the parallax one, or set its location in the parallax option headtrackrScriptLocation");
+        }
       }
-      
+
       var inputVideo = document.createElement('video'),
           canvasInput = document.createElement('canvas'),
           canvasDebug = null,

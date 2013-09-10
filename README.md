@@ -153,7 +153,7 @@ $scene.parallax('friction', 0.2, 0.8);
 
 Use Parallax.js just as you would. But rather than devicemotion, use headtracking with your webcam (based on the [headtrackr.js](https://github.com/auduno/headtrackr) library).
 
-Don't forget to insert the headtrackr.js script in your page.
+Don't forget to insert the `headtrackr.js` or `headtrackr.min.js` script in your page, you can also specify it in the options in `headtrackr-script-location` (for lazy load).
 
 You can test the headtracking version of the simple demo here :
 
@@ -164,13 +164,14 @@ This is a first draft for the headtracking support.
 
 ####Headtracking behaviours
 
-| Behavior                   | Values              | Description                                                                                                                                                      |
-| -------------------------- | ------------------- | -----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `headtrackr`               | `true` or `false`   | Activates headtracking in parallax (you will be asked to allow the access to your webcam) - it disables devicemotion events and uses mouse if headtracking fails |              
-| `headtrackr-display-video` | `true` or `false`   | Specifies whether or not to display the webcam video stream (false by default) todo : let the user provide a video tag so that he can style it                   |
-| `headtrackr-scalar-x`      | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-x)                                                                     |
-| `headtrackr-scalar-y`      | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-y)                                                                     |
-| `headtrackr-debug-view`    | `true` or `false`   | Adds a box on the video to show what the tracker is capturing of your face                                                                                       |
+| Behavior                    | Values              | Description                                                                                                                                                      |
+| --------------------------- | ------------------- | -----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `headtrackr`                | `true` or `false`   | Activates headtracking in parallax (you will be asked to allow the access to your webcam) - it disables devicemotion events and uses mouse if headtracking fails |              
+| `headtrackr-display-video`  | `true` or `false`   | Specifies whether or not to display the webcam video stream (false by default) todo : let the user provide a video tag so that he can style it                   |
+| `headtrackr-scalar-x`       | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-x)                                                                     |
+| `headtrackr-scalar-y`       | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-y)                                                                     |
+| `headtrackr-debug-view`     | `true` or `false`   | Adds a box on the video to show what the tracker is capturing of your face                                                                                       |
+| `headtrackr-script-location`| `string`            | Location of the `headtrackr.js` or `headtrackr.min.js` script (lazy load for future feature detection)                                                           |
 
 ## iOS
 

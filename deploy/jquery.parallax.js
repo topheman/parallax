@@ -58,7 +58,8 @@
     headtrackrDisplayVideo: false,
     headtrackrDebugView: false,
     headtrackrScalarX: 3,
-    headtrackrScalarY: 3
+    headtrackrScalarY: 3,
+    headtrackrScriptLocation: null
   };
 
   function Plugin(element, options) {
@@ -86,7 +87,8 @@
       headtrackrDisplayVideo: this.$context.data('headtrackr-display-video') || null,
       headtrackrDebugView: this.$context.data('headtrackr-debug-view') || null,
       headtrackrScalarX: parseFloat(this.$context.data('headtrackr-scalar-x')) || null,
-      headtrackrScalarY: parseFloat(this.$context.data('headtrackr-scalar-y')) || null
+      headtrackrScalarY: parseFloat(this.$context.data('headtrackr-scalar-y')) || null,
+      headtrackrScriptLocation: this.$context.data('headtrackr-script-location') || null
     };
 
     // Delete Null Data Values
@@ -192,7 +194,24 @@
     Plugin.prototype.launchHeadtrackr = function() {
       
       if(typeof headtrackr === "undefined"){
-        throw new Error("To use the headtrackr feature, you need to include the headtrakr.js or headtrackr.min.js script before the parallax one");
+        if(this.headtrackrScriptLocation !== null){
+          var headTrackrScript = document.createElement('script'),
+              self = this;
+          headTrackrScript.onload = function(script){
+            if(typeof headtrackr !== "undefined"){
+              self.launchHeadtrackr();
+            }
+            else{
+              throw new Error("Wrong path to headtrackr script");
+            }
+          };
+          headTrackrScript.src = this.headtrackrScriptLocation;
+          document.getElementsByTagName('body')[0].appendChild(headTrackrScript);
+          return false;
+        }
+        else{
+          throw new Error("To use the headtrackr feature, you need to include the headtrakr.js or headtrackr.min.js script before the parallax one, or set its location in the parallax option headtrackrScriptLocation");
+        }
       }
       
       var inputVideo = document.createElement('video'),
