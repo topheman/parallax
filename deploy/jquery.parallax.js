@@ -192,6 +192,55 @@
   Plugin.prototype.transform3DSupport = Plugin.prototype.transformSupport('3D');
 
     Plugin.prototype.launchHeadtrackr = function() {
+      var getUserMediaEnabled = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+      if(typeof getUserMediaEnabled === "undefined" || getUserMediaEnabled === null){
+        //if no callback is set, set the default callback
+        if(typeof(this.headtrackrNoGetUserMediaCallback) !== "function"){
+          this.headtrackrNoGetUserMediaCallback = function(){
+            var message = "<small>Sorry no getUserMedia support on your browser.</small><br>Please use <strong>Chrome or Firefox</strong> to test <strong>facetracking</strong>.<br><small>You can still use the position of your cursor instead.</small>";
+            console.log(message.replace(/<br>/g,'\n').replace(/(<([^>]+)>)/ig,''));
+
+            var timeout = 10000;
+            // create element and attach to body
+            var d = document.createElement('div'),
+            d2 = document.createElement('div'),
+            p = document.createElement('p');
+            d.setAttribute('id', 'headtrackerMessageDiv');
+
+            d.style.left = "10%";
+            d.style.right = "10%";
+            d.style.top = "10%";
+            d.style.fontSize = "50px";
+            d.style.color = "#777";
+            d.style.position = "absolute";
+            d.style.fontFamily = "Helvetica, Arial, sans-serif";
+            d.style.zIndex = '100002';
+
+            d2.style.marginLeft = "auto";
+            d2.style.marginRight = "auto";
+            d2.style.width = "100%";
+            d2.style.textAlign = "center";
+            d2.style.color = "#fff";
+            d2.style.backgroundColor = "#444";
+            d2.style.opacity = "0.8";
+
+            p.setAttribute('id', 'parallaxHeadtrackerNoGetUserMediaMessage');
+            p.innerHTML = message;
+            d2.appendChild(p);
+            d.appendChild(d2);
+            document.body.appendChild(d);
+            
+            setTimeout(function(){
+                d.parentNode.removeChild(d);
+            },timeout);
+            
+          };
+        }
+        this.headtrackrNoGetUserMediaCallback();
+        //back to normal behaviour
+        this.headtrackr = false;
+        return false;
+      }
       
       if(typeof headtrackr === "undefined"){
         if(this.headtrackrScriptLocation !== null){

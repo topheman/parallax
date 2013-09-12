@@ -153,8 +153,17 @@ $scene.parallax('friction', 0.2, 0.8);
 
 Use Parallax.js just as you would. But rather than devicemotion, use headtracking with your webcam (based on the [headtrackr.js](https://github.com/auduno/headtrackr) library).
 
-Don't forget to insert the `headtrackr.js` or `headtrackr.min.js` script in your page, you can also specify it in the options in `headtrackr-script-location` (for lazy load).
+Don't forget to insert the `headtrackr.js` or `headtrackr.min.js` script in your page, you can also specify it in the options in `headtrackr-script-location` (for lazy load). 
 
+Some getUserMedia feature detection is done, if you're not on firefox or chrome (which implement the feature at the moment), the headtrackr script won't even be downloaded and you'll have a message telling you that headtracking won't work an falls back to mouse (normal behaviour) - you can customize the message by passing a callback in the options like :
+
+```javascript
+$('#scene').parallax({
+  headtrackrNoGetUserMediaCallback: function(){
+    console.log('Write your own message function like a modal or anything better than the ugly message I made up … ;-)');
+  }
+});
+```
 You can test the headtracking version of the simple demo here :
 
 * [with Parallax](https://rawgithub.com/topheman/parallax/master/examples/simple.headtrackr.html)
