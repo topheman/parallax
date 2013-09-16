@@ -209,8 +209,8 @@
         //if no callback is set, set the default callback
         if(typeof(this.headtrackrNoGetUserMediaCallback) !== "function"){
           this.headtrackrNoGetUserMediaCallback = function(){
-            var message = "<small>Sorry no getUserMedia support on your browser.</small><br>Please use <strong>Chrome or Firefox</strong> to test <strong>facetracking</strong>.<br><small>You can still use the position of your cursor instead.</small>";
-            console.log(message.replace(/<br>/g,'\n').replace(/(<([^>]+)>)/ig,''));
+            var message = "<small>Sorry no getUserMedia support on your browser.</small><br><br>To test <strong>facetracking</strong>,<br><br>please use<br><strong>Chrome or Firefox</strong>";
+            console.log(message.replace(/<br>/g,' ').replace(/(<([^>]+)>)/ig,''));
 
             var timeout = 10000;
             // create element and attach to body
@@ -222,7 +222,7 @@
             d.style.left = "10%";
             d.style.right = "10%";
             d.style.top = "10%";
-            d.style.fontSize = "50px";
+            d.style.fontSize = "150%";
             d.style.color = "#777";
             d.style.position = "absolute";
             d.style.fontFamily = "Helvetica, Arial, sans-serif";
@@ -294,18 +294,18 @@
       inputVideo.width = videoWidth;
       inputVideo.height = videoHeight;
       
-      canvasInput.style.position = "absolute";
+      canvasInput.style.position = "fixed";
       canvasInput.style.bottom = "0px";
       canvasInput.style.right = "0px";
       canvasInput.width = videoWidth;
       canvasInput.height = videoHeight;
       
-      if(this.headtrackrDisplayVideo === true){
+      if(this.headtrackrDisplayVideo === true || this.headtrackrDebugView === true){
         canvasInput.style.display = "block"; 
         if(this.headtrackrDebugView === true){
           canvasDebug = document.createElement('canvas');
           canvasDebug.style.display = "block";
-          canvasDebug.style.position = "absolute";
+          canvasDebug.style.position = "fixed";
           canvasDebug.style.bottom = "0px";
           canvasDebug.style.right = "0px";
           canvasDebug.width = videoWidth;
@@ -465,6 +465,11 @@
     this.scalarY = y === undefined ? this.scalarY : y;
   };
 
+  Parallax.prototype.headtrackrScalar = function(x, y) {
+    this.headtrackrScalarX = x === undefined ? this.headtrackrScalarX : x;
+    this.headtrackrScalarY = y === undefined ? this.headtrackrScalarY : y;
+  };
+
   Parallax.prototype.limit = function(x, y) {
     this.limitX = x === undefined ? this.limitX : x;
     this.limitY = y === undefined ? this.limitY : y;
@@ -604,7 +609,7 @@
       this.iy = this.headtrackrScalarY*(event.y - this.htrackr.canvasInputInfos.hh) / this.htrackr.canvasInputInfos.hh;
       if(this.headtrackrDebugView === true){
         this.htrackr.canvasDebug.width = this.htrackr.canvasDebug.width;
-        this.htrackr.ctxDebug.translate(event.x, event.y)
+        this.htrackr.ctxDebug.translate(event.x, event.y);
         this.htrackr.ctxDebug.rotate(event.angle-(Math.PI/2));
         this.htrackr.ctxDebug.strokeStyle = "#00CC00";
         this.htrackr.ctxDebug.strokeRect((-(event.width/2)) >> 0, (-(event.height/2)) >> 0, event.width, event.height);
