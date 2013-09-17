@@ -6,6 +6,8 @@ position of the cursor is used instead.
 
 Check out this **[demo][demo]** to see it in action!
 
+This version is a fork by [Christophe Rosset (@topheman)](https://github.com/topheman), from the original [Parallax.js by Matthew Wagerfield](https://github.com/wagerfield/parallax). It adds headtracking support to the original library - thanks to Audun Mathias Øygard for his [headtrackr.js](https://github.com/auduno/headtrackr) library. See **[Headtracking Support](#headtracking-support)** section for more infos.
+
 ## Setup
 
 Simply create a list of elements giving each item that you want to move within
@@ -149,38 +151,83 @@ $scene.parallax('scalar', 2, 8);
 $scene.parallax('friction', 0.2, 0.8);
 ```
 
-###Headtracking support
+## Headtracking support
 
 Use Parallax.js just as you would. But rather than devicemotion, use headtracking with your webcam (based on the [headtrackr.js](https://github.com/auduno/headtrackr) library).
 
-Don't forget to insert the `headtrackr.js` or `headtrackr.min.js` script in your page, you can also specify it in the options in `headtrackr-script-location` (for lazy load). 
+Don't forget to insert the `headtrackr.js` or `headtrackr.min.js` script in your page or specify it in the options in `headtrackr-script-location` (for lazy load). 
 
-Some getUserMedia feature detection is done, if you're not on firefox or chrome (which implement the feature at the moment), the headtrackr script won't even be downloaded and you'll have a message telling you that headtracking won't work an falls back to mouse (normal behaviour) - you can customize the message by passing a callback in the options like :
+Some getUserMedia feature detection is done, if you're not on firefox or chrome (which implement the feature at the moment), the headtrackr script won't even be downloaded and you'll have a message telling you that headtracking won't work and falls back to normal behaviour.
 
-```javascript
-$('#scene').parallax({
-  headtrackrNoGetUserMediaCallback: function(){
-    console.log('Write your own message function like a modal or anything better than the ugly message I made up … ;-)');
-  }
-});
-```
 You can test the headtracking version of the simple demo here :
 
 * [with Parallax](https://rawgithub.com/topheman/parallax/master/examples/simple.headtrackr.html)
 * [with the Parallax jQuery plugin](https://rawgithub.com/topheman/parallax/master/examples/jquery.headtrackr.html)
 
-This is a first draft for the headtracking support.
+### Headtracking - Behaviors: Constructor Object Example
 
-####Headtracking behaviours
+```javascript
+var scene = document.getElementById('scene');
+var parallax = new Parallax(scene, {
+  // … set any of the usual parallax behaviours, then set the headtrackr ones
+  headtrackr:true,
+  scalarX: 15.0,
+  scalarY: 15.0,
+//  headtrackrDisplayVideo:true, //no need if you set headtrackrDebugView at true
+  headtrackrDebugView: true,
+  invertX:false,
+  invertY:false,
+  headtrackrScriptLocation: "../deploy/headtrackr.min.js",
+  headtrackrNoGetUserMediaCallback: function(){
+    console.log('Write your own message function like a modal or anything better than the ugly message I made up … ;-)');
+  }
+});
+```
+
+### Headtracking - Behaviors: API Example
+
+```javascript
+var scene = document.getElementById('scene');
+var parallax = new Parallax(scene);
+parallax.headtrackrScalar(2, 8);
+```
+
+### Headtracking - jQuery: Passing Options
+
+```javascript
+$('#scene').parallax({
+  // … set any of the usual parallax behaviours, then set the headtrackr ones
+  headtrackr:true,
+  scalarX: 15.0,
+  scalarY: 15.0,
+//  headtrackrDisplayVideo:true, //no need if you set headtrackrDebugView at true
+  headtrackrDebugView: true,
+  invertX:false,
+  invertY:false,
+  headtrackrScriptLocation: "../deploy/headtrackr.min.js",
+  headtrackrNoGetUserMediaCallback: function(){
+    console.log('Write your own message function like a modal or anything better than the ugly message I made up … ;-)');
+  }
+});
+```
+
+### Headtracking - jQuery: API Example
+
+```javascript
+var $scene = $('#scene').parallax();
+$scene.parallax('headtrackrScalar', 2, 8);
+```
+
+### Headtracking behaviours
 
 | Behavior                    | Values              | Description                                                                                                                                                      |
 | --------------------------- | ------------------- | -----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `headtrackr`                | `true` or `false`   | Activates headtracking in parallax (you will be asked to allow the access to your webcam) - it disables devicemotion events and uses mouse if headtracking fails |              
-| `headtrackr-display-video`  | `true` or `false`   | Specifies whether or not to display the webcam video stream (false by default) todo : let the user provide a video tag so that he can style it                   |
+| `headtrackr-display-video`  | `true` or `false`   | Specifies whether or not to display the webcam video stream (`false` by default)                                                                                 |
 | `headtrackr-scalar-x`       | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-x)                                                                     |
 | `headtrackr-scalar-y`       | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-y)                                                                     |
-| `headtrackr-debug-view`     | `true` or `false`   | Adds a box on the video to show what the tracker is capturing of your face                                                                                       |
-| `headtrackr-script-location`| `string`            | Location of the `headtrackr.js` or `headtrackr.min.js` script (lazy load for future feature detection)                                                           |
+| `headtrackr-debug-view`     | `true` or `false`   | Specifies whether or not to display the webcam video stream, with a box over your head (great for debugging) (`false` by default)                                |
+| `headtrackr-script-location`| `string`            | Location of the `headtrackr.js` or `headtrackr.min.js` script (lazy load for feature detection)                                                                  |
 
 ## iOS
 
