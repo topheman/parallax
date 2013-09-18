@@ -24,6 +24,7 @@
     frictionX: 0.1,
     frictionY: 0.1,
     headtrackr: false,
+    headtrackrPreferDeviceMotion: true,
     headtrackrDisplayVideo: false,
     headtrackrDebugView: false,
     headtrackrScalarX: 3,
@@ -50,6 +51,7 @@
       frictionX: this.data(this.element, 'friction-x'),
       frictionY: this.data(this.element, 'friction-y'),
       headtrackr: this.data(this.element, 'headtrackr'),
+      headtrackrPreferDeviceMotion: this.data(this.element, 'headtrackr-prefer-device-motion'),
       headtrackrDisplayVideo: this.data(this.element, 'headtrackr-display-video'),
       headtrackrDebugView: this.data(this.element, 'headtrackr-debug-view'),
       headtrackrScalarX: this.data(this.element, 'headtrackr-scalar-x'),
@@ -199,156 +201,162 @@
   Parallax.prototype.vendors = [null,['-webkit-','webkit'],['-moz-','Moz'],['-o-','O'],['-ms-','ms']];
   Parallax.prototype.motionSupport = !!window.DeviceMotionEvent;
   Parallax.prototype.orientationSupport = !!window.DeviceOrientationEvent;
+  Parallax.prototype.getUserMediaSupport = !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+  Parallax.prototype.headtrackrEnabled = false; //will turn to true if getUserMediaSupport and no DeviceMotion (or headtrackrPreferDeviceMotion = false)
   Parallax.prototype.orientationStatus = 0;
   Parallax.prototype.transform2DSupport = Parallax.prototype.transformSupport('2D');
   Parallax.prototype.transform3DSupport = Parallax.prototype.transformSupport('3D');
-
-    Parallax.prototype.launchHeadtrackr = function() {
-      var getUserMediaEnabled = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-      if(typeof getUserMediaEnabled === "undefined" || getUserMediaEnabled === null){
-        //if no callback is set, set the default callback
-        if(typeof(this.headtrackrNoGetUserMediaCallback) !== "function"){
-          this.headtrackrNoGetUserMediaCallback = function(){
-            var message = "<small>Sorry no getUserMedia support on your browser.</small><br><br>To test <strong>facetracking</strong>,<br><br>please use<br><strong>Chrome or Firefox</strong>";
-            console.log(message.replace(/<br>/g,' ').replace(/(<([^>]+)>)/ig,''));
-
-            var timeout = 10000;
-            // create element and attach to body
-            var d = document.createElement('div'),
-            d2 = document.createElement('div'),
-            p = document.createElement('p');
-            d.setAttribute('id', 'headtrackerMessageDiv');
-
-            d.style.left = "10%";
-            d.style.right = "10%";
-            d.style.top = "10%";
-            d.style.fontSize = "150%";
-            d.style.color = "#777";
-            d.style.position = "absolute";
-            d.style.fontFamily = "Helvetica, Arial, sans-serif";
-            d.style.zIndex = '100002';
-
-            d2.style.marginLeft = "auto";
-            d2.style.marginRight = "auto";
-            d2.style.width = "100%";
-            d2.style.textAlign = "center";
-            d2.style.color = "#fff";
-            d2.style.backgroundColor = "#444";
-            d2.style.opacity = "0.8";
-
-            p.setAttribute('id', 'parallaxHeadtrackerNoGetUserMediaMessage');
-            p.innerHTML = message;
-            d2.appendChild(p);
-            d.appendChild(d2);
-            document.body.appendChild(d);
-            
-            setTimeout(function(){
-                d.parentNode.removeChild(d);
-            },timeout);
-            
-          };
-        }
-        this.headtrackrNoGetUserMediaCallback();
-        //back to normal behaviour
-        this.headtrackr = false;
+  
+  /**
+   * Method to be called when the headtrackr feature was asked for, there is getUserMedia support and no DeviceMotion or headtrackrPreferDeviceMotion = false
+   */
+  Parallax.prototype.headtrackrPrepare = function(){
+    if(typeof headtrackr === "undefined"){
+      if(this.headtrackrScriptLocation !== null){
+        var headTrackrScript = document.createElement('script'),
+            self = this;
+        headTrackrScript.onload = function(script){
+          if(typeof headtrackr !== "undefined"){
+            self.headtrackrPrepare();
+          }
+          else{
+            throw new Error("Wrong path to headtrackr script");
+          }
+        };
+        headTrackrScript.src = this.headtrackrScriptLocation;
+        document.getElementsByTagName('body')[0].appendChild(headTrackrScript);
         return false;
       }
-
-      if(typeof headtrackr === "undefined"){
-        if(this.headtrackrScriptLocation !== null){
-          var headTrackrScript = document.createElement('script'),
-              self = this;
-          headTrackrScript.onload = function(script){
-            if(typeof headtrackr !== "undefined"){
-              self.launchHeadtrackr();
-            }
-            else{
-              throw new Error("Wrong path to headtrackr script");
-            }
-          };
-          headTrackrScript.src = this.headtrackrScriptLocation;
-          document.getElementsByTagName('body')[0].appendChild(headTrackrScript);
-          return false;
-        }
-        else{
-          throw new Error("To use the headtrackr feature, you need to include the headtrakr.js or headtrackr.min.js script before the parallax one, or set its location in the parallax option headtrackrScriptLocation");
-        }
-      }
-
-      var inputVideo = document.createElement('video'),
-          canvasInput = document.createElement('canvas'),
-          canvasDebug = null,
-          videoWidth = "320",
-          videoHeight = "240",
-          headtrackrOptions = {},
-          self;
-  
-      //add the mousemove listener while connecting the camera
-      //we'll remove it when the face is detected to plug trackr
-      //then readd it when the trackr fails
-      window.addEventListener('mousemove', this.onMouseMove);
-  
-      inputVideo.autoplay = true;
-      inputVideo.loop = true;
-      inputVideo.style.display = "none";
-      inputVideo.width = videoWidth;
-      inputVideo.height = videoHeight;
-      
-      canvasInput.style.position = "fixed";
-      canvasInput.style.bottom = "0px";
-      canvasInput.style.right = "0px";
-      canvasInput.width = videoWidth;
-      canvasInput.height = videoHeight;
-      
-      if(this.headtrackrDisplayVideo === true || this.headtrackrDebugView === true){
-        canvasInput.style.display = "block"; 
-        if(this.headtrackrDebugView === true){
-          canvasDebug = document.createElement('canvas');
-          canvasDebug.style.display = "block";
-          canvasDebug.style.position = "fixed";
-          canvasDebug.style.bottom = "0px";
-          canvasDebug.style.right = "0px";
-          canvasDebug.width = videoWidth;
-          canvasDebug.height = videoHeight;
-          headtrackrOptions.calcAngles = true;
-        }
-      }
       else{
-        this.headtrackrDebugView = false;
-        canvasInput.style.display = "none";          
+        throw new Error("To use the headtrackr feature, you need to include the headtrakr.js or headtrackr.min.js script before the parallax one, or set its location in the parallax option headtrackrScriptLocation");
       }
-      
-      this.htrackr = new headtrackr.Tracker(headtrackrOptions);
-      
-      document.getElementsByTagName('body')[0].appendChild(inputVideo);
-      document.getElementsByTagName('body')[0].appendChild(canvasInput);
-      if(canvasDebug !== null){
-        document.getElementsByTagName('body')[0].appendChild(canvasDebug);
-        this.htrackr.canvasDebug = canvasDebug;
-        this.htrackr.ctxDebug = canvasDebug.getContext('2d');
+    }
+
+    var inputVideo = document.createElement('video'),
+        canvasInput = document.createElement('canvas'),
+        canvasDebug = null,
+        videoWidth = "320",
+        videoHeight = "240",
+        headtrackrOptions = {},
+        self;
+
+    //add the mousemove listener while connecting the camera
+    //we'll remove it when the face is detected to plug trackr
+    //then readd it when the trackr fails
+    window.addEventListener('mousemove', this.onMouseMove);
+
+    inputVideo.autoplay = true;
+    inputVideo.loop = true;
+    inputVideo.style.display = "none";
+    inputVideo.width = videoWidth;
+    inputVideo.height = videoHeight;
+
+    canvasInput.style.position = "fixed";
+    canvasInput.style.bottom = "0px";
+    canvasInput.style.right = "0px";
+    canvasInput.width = videoWidth;
+    canvasInput.height = videoHeight;
+
+    if(this.headtrackrDisplayVideo === true || this.headtrackrDebugView === true){
+      canvasInput.style.display = "block"; 
+      if(this.headtrackrDebugView === true){
+        canvasDebug = document.createElement('canvas');
+        canvasDebug.style.display = "block";
+        canvasDebug.style.position = "fixed";
+        canvasDebug.style.bottom = "0px";
+        canvasDebug.style.right = "0px";
+        canvasDebug.width = videoWidth;
+        canvasDebug.height = videoHeight;
+        headtrackrOptions.calcAngles = true;
       }
-      
-      this.htrackr.init(inputVideo, canvasInput);
-      this.htrackr.start();
-      this.htrackr.canvasInputInfos = {
-        ww : canvasInput.width,
-        wh : canvasInput.height,
-        hw : canvasInput.width / 2,
-        hh : canvasInput.height / 2
+    }
+    else{
+      this.headtrackrDebugView = false;
+      canvasInput.style.display = "none";          
+    }
+
+    this.htrackr = new headtrackr.Tracker(headtrackrOptions);
+
+    document.getElementsByTagName('body')[0].appendChild(inputVideo);
+    document.getElementsByTagName('body')[0].appendChild(canvasInput);
+    if(canvasDebug !== null){
+      document.getElementsByTagName('body')[0].appendChild(canvasDebug);
+      this.htrackr.canvasDebug = canvasDebug;
+      this.htrackr.ctxDebug = canvasDebug.getContext('2d');
+    }
+
+    this.htrackr.init(inputVideo, canvasInput);
+    this.htrackr.start();
+    this.htrackr.canvasInputInfos = {
+      ww : canvasInput.width,
+      wh : canvasInput.height,
+      hw : canvasInput.width / 2,
+      hh : canvasInput.height / 2
+    };
+
+    self = this;
+    document.addEventListener('headtrackrStatus', function(e){
+      console.log(e.status,e.type,e.timeStamp);
+      if(e.status === "found"){
+        window.removeEventListener('mousemove', self.onMouseMove);
+        document.addEventListener("facetrackingEvent", self.onFaceTracking, false);
+      }
+      else if(e.status === "redetecting"){
+        window.addEventListener('mousemove', self.onMouseMove);
+        document.removeEventListener("facetrackingEvent", self.onFaceTracking, false);
+      }
+    });
+  };
+  
+  /**
+   * Method to be called when the headtrackr was to be initiated but there was no getUserMediaSupport for
+   */
+  Parallax.prototype.headtrackrFail = function(){
+    //if no callback is set, set the default callback
+    if(typeof(this.headtrackrNoGetUserMediaCallback) !== "function"){
+      this.headtrackrNoGetUserMediaCallback = function(){
+        var message = "<small>Sorry no getUserMedia support on your browser.</small><br><br>To test <strong>facetracking</strong>,<br><br>please use<br><strong>Chrome or Firefox</strong>";
+        console.log(message.replace(/<br>/g,' ').replace(/(<([^>]+)>)/ig,''));
+
+        var timeout = 10000;
+        // create element and attach to body
+        var d = document.createElement('div'),
+        d2 = document.createElement('div'),
+        p = document.createElement('p');
+        d.setAttribute('id', 'headtrackerMessageDiv');
+
+        d.style.left = "10%";
+        d.style.right = "10%";
+        d.style.top = "10%";
+        d.style.fontSize = "150%";
+        d.style.color = "#777";
+        d.style.position = "absolute";
+        d.style.fontFamily = "Helvetica, Arial, sans-serif";
+        d.style.zIndex = '100002';
+
+        d2.style.marginLeft = "auto";
+        d2.style.marginRight = "auto";
+        d2.style.width = "100%";
+        d2.style.textAlign = "center";
+        d2.style.color = "#fff";
+        d2.style.backgroundColor = "#444";
+        d2.style.opacity = "0.8";
+
+        p.setAttribute('id', 'parallaxHeadtrackerNoGetUserMediaMessage');
+        p.innerHTML = message;
+        d2.appendChild(p);
+        d.appendChild(d2);
+        document.body.appendChild(d);
+
+        setTimeout(function(){
+            d.parentNode.removeChild(d);
+        },timeout);
+
       };
-      
-      self = this;
-      document.addEventListener('headtrackrStatus', function(e){
-        console.log(e.status,e.type,e.timeStamp);
-        if(e.status === "found"){
-          window.removeEventListener('mousemove', self.onMouseMove);
-          document.addEventListener("facetrackingEvent", self.onFaceTracking, false);
-        }
-        else if(e.status === "redetecting"){
-          window.addEventListener('mousemove', self.onMouseMove);
-          document.removeEventListener("facetrackingEvent", self.onFaceTracking, false);
-        }
-      });
+    }
+    this.headtrackrNoGetUserMediaCallback();
+    //back to normal behaviour
+    this.headtrackr = false;
   };
 
   Parallax.prototype.initialise = function() {
@@ -376,8 +384,15 @@
     }
 
     // Setup
-    if(this.headtrackr === true){
-        this.launchHeadtrackr();
+    
+    //if headtrackr was asked, and can be supported (via getUserMedia), no matter if there is DeviceMotion on the device, enable it
+    //if headtracker was asked but with headtrackrPreferDeviceMotion === true, the headtrackrPrepare() is made in the onOrientationTimer (where we make sure there is - or not - DeviceMotion support)
+    if(this.headtrackr === true && this.getUserMediaSupport === true && (this.headtrackrPreferDeviceMotion === false || this.orientationSupport === false) && this.headtrackrEnabled === false){
+      this.headtrackrPrepare();
+      this.headtrackrEnabled = true;
+    }
+    else if(this.headtrackr === true && this.getUserMediaSupport === false && (this.headtrackrPreferDeviceMotion === false || this.orientationSupport === false) && this.headtrackrEnabled === false){
+      this.headtrackrFail();
     }
     this.updateDimensions();
     this.enable();
@@ -407,20 +422,19 @@
   Parallax.prototype.enable = function() {
     if (!this.enabled) {
       this.enabled = true;
-      if (this.headtrackr === false && this.orientationSupport) {
+      if (this.headtrackrEnabled === false && this.orientationSupport) {
         this.portrait = null;
         window.addEventListener('deviceorientation', this.onDeviceOrientation);
         setTimeout(this.onOrientationTimer, this.supportDelay);
-      } else {
+      } 
+      else if (this.headtrackrEnabled === false) {
         this.cx = 0;
         this.cy = 0;
         this.portrait = false;
-        if(!this.htrackr){
-          window.addEventListener('mousemove', this.onMouseMove);
-        }
-        else{
-          document.addEventListener("facetrackingEvent", this.onFaceTracking, false);
-        }
+        window.addEventListener('mousemove', this.onMouseMove);
+      }
+      else {
+        document.addEventListener("facetrackingEvent", this.onFaceTracking, false);
       }
       window.addEventListener('resize', this.onWindowResize);
       this.raf = requestAnimationFrame(this.onAnimationFrame);
@@ -430,15 +444,14 @@
   Parallax.prototype.disable = function() {
     if (this.enabled) {
       this.enabled = false;
-      if (this.headtrackr === false && this.orientationSupport) {
+      if (this.headtrackrEnabled === false && this.orientationSupport) {
         window.removeEventListener('deviceorientation', this.onDeviceOrientation);
-      } else {
-        if(!this.htrackr){
-          window.removeEventListener('mousemove', this.onMouseMove);
-        }
-        else{
-          document.removeEventListener("facetrackingEvent", this.onFaceTracking, false);
-        }
+      } 
+      else if (this.headtrackrEnabled === false) {
+        window.removeEventListener('mousemove', this.onMouseMove);
+      }
+      else {
+        document.removeEventListener("facetrackingEvent", this.onFaceTracking, false);
       }
       window.removeEventListener('resize', this.onWindowResize);
       cancelAnimationFrame(this.raf);
@@ -519,6 +532,16 @@
     if (this.orientationSupport && this.orientationStatus === 0) {
       this.disable();
       this.orientationSupport = false;
+      //only at this point we are sure there is no orientationSupport (can't rely on !!window.DeviceOrientationEvent, beacause we may be on a desktop that may expose the API but doesn't have any accelerometer)
+      //so, we launch the headtrackr in fallback to deviceMotion as asked in the options as headtrackrPreferDeviceMotion = true
+      if(this.headtrackr === true && this.getUserMediaSupport === true && this.headtrackrPreferDeviceMotion === true && this.headtrackrEnabled === false){
+        this.headtrackrPrepare();
+        this.headtrackrEnabled = true;
+      }
+      //in case there is no getUserMedia support but it was asked to use headtrackr 
+      else if(this.headtrackr === true && this.getUserMediaSupport === false && this.headtrackrPreferDeviceMotion === true && this.headtrackrEnabled === false){
+        this.headtrackrFail();
+      }
       this.enable();
     }
   };
