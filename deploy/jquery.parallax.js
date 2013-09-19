@@ -589,14 +589,8 @@
 
   Plugin.prototype.onDeviceOrientation = function(event) {
 
-    // Update Orientation Support Flag
-    if (event.beta === null || event.gamma === null) {
-      this.disable();
-      this.orientationSupport = false;
-      this.$context.attr('data-mode', this.orientationSupport ? 'orientation' : 'cursor');
-      this.enable();
-      return false;
-    }
+    // Validate environment and event properties.
+    if (!this.desktop && event.beta !== null && event.gamma !== null) {
 
       // Set orientation status.
       this.orientationStatus = 1;
