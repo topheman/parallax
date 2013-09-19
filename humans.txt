@@ -10,9 +10,16 @@ Site: http://cargocollective.com/whydontwetry
 Twitter: @claudioguglieri
 Location: New York
 
+/* HEADTRACKING SUPPORT */
+
+Developer: Christophe Rosset
+Site: http://labs.topheman.com
+Twitter: @topheman
+Location: Paris
+
 /* SITE */
 
 Last Update: 2013/08/26
 Standards: HTML5, CSS3
-Components: jQuery, Underscore, Fastclick
-Software: Sublime Text 2, CodeKit
+Components: jQuery, Underscore, Fastclick, headtrackr
+Software: Sublime Text 2, CodeKit, Netbeans

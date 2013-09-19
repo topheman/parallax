@@ -433,6 +433,7 @@
         window.addEventListener('mousemove', this.onMouseMove);
       }
       else {
+        this.$context.attr('data-mode', 'headtracking');
         document.addEventListener("facetrackingEvent", this.onFaceTracking, false);
       }
       window.addEventListener('resize', this.onWindowResize);
