@@ -43,7 +43,12 @@
             headtrackrDebugView: true,
             invertX:false,
             invertY:false,
-            headtrackrScriptLocation: "../deploy/headtrackr.min.js"
+            headtrackrScriptLocation: "../deploy/headtrackr.min.js",
+            headtrackrCameraFoundCallback: function(){
+              var headtrackerMessageDiv = document.getElementById('headtrackerMessageDiv');
+              //at this time, you're sure the user clicked on "allow" and the webcam is rolling (you can override the inline styles of the headtrackr div message)
+              headtrackerMessageDiv.style.top = "20%";
+            }
 //            ,headtrackrNoGetUserMediaCallback : function(){
 //                //you can do anything here to inform your user (this will override the ugly warning message I made ;-) )
 //                console.log('no getUserMedia ... (special callback)');

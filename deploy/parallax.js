@@ -283,6 +283,7 @@
     inputVideo.width = videoWidth;
     inputVideo.height = videoHeight;
 
+    canvasInput.id = "headtrackr-display-video";
     canvasInput.style.position = "fixed";
     canvasInput.style.bottom = "0px";
     canvasInput.style.right = "0px";
@@ -293,6 +294,7 @@
       canvasInput.style.display = "block"; 
       if(this.headtrackrDebugView === true){
         canvasDebug = document.createElement('canvas');
+        canvasDebug.id = "headtrackr-debug-view";
         canvasDebug.style.display = "block";
         canvasDebug.style.position = "fixed";
         canvasDebug.style.bottom = "0px";
@@ -329,7 +331,12 @@
     self = this;
     document.addEventListener('headtrackrStatus', function(e){
       console.log(e.status,e.type,e.timeStamp);
-      if(e.status === "found"){
+      if(e.status === "camera found"){
+        if(typeof(self.headtrackrCameraFoundCallback) === "function"){
+          self.headtrackrCameraFoundCallback();
+        }
+      }
+      else if(e.status === "found"){
         window.removeEventListener('mousemove', self.onMouseMove);
         document.addEventListener("facetrackingEvent", self.onFaceTracking, false);
       }

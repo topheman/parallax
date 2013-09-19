@@ -180,6 +180,11 @@ var parallax = new Parallax(scene, {
   invertX:false,
   invertY:false,
   headtrackrScriptLocation: "../deploy/headtrackr.min.js",
+  headtrackrCameraFoundCallback: function(){
+    var headtrackerMessageDiv = document.getElementById('headtrackerMessageDiv');
+    //at this time, you're sure the user clicked on "allow" and the webcam is rolling (you can override the inline styles of the headtrackr div message)
+    headtrackerMessageDiv.style.top = "20%";
+  },
   headtrackrNoGetUserMediaCallback: function(){
     console.log('Write your own message function like a modal or anything better than the ugly message I made up … ;-)');
   }
@@ -208,6 +213,11 @@ $('#scene').parallax({
   invertX:false,
   invertY:false,
   headtrackrScriptLocation: "../deploy/headtrackr.min.js",
+  headtrackrCameraFoundCallback: function(){
+    var headtrackerMessageDiv = document.getElementById('headtrackerMessageDiv');
+    //at this time, you're sure the user clicked on "allow" and the webcam is rolling (you can override the inline styles of the headtrackr div message)
+    headtrackerMessageDiv.style.top = "20%";
+  },
   headtrackrNoGetUserMediaCallback: function(){
     console.log('Write your own message function like a modal or anything better than the ugly message I made up … ;-)');
   }
