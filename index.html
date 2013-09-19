@@ -129,10 +129,18 @@
 				<div class="cables center accelerate">
 					<div class="panel accelerate">
 						<header>
-							<h1>parallax<em>.js</em></h1>
+							<h1>parallax<em>.js</em> w/ <em>headtracking</em></h1>
 						</header>
-						<p>WOW, that's deep man! <strong>parallax.js</strong> reacts to the orientation of your smart device, offsetting layers depending on their depth within a scene... Oh, you don't have a smart device? No worries, if no gyroscope or motion detection hardware is available, <strong>parallax.js</strong> uses the position of your cursor instead. Radical.</p>
-						<p>This project is a collaboration between<br><a href="http://www.wagerfield.com" target="_blank">Matthew Wagerfield</a> &amp; <a href="http://cargocollective.com/whydontwetry" target="_blank">Claudio Guglieri</a>.</p>
+						<p>
+                            You like <strong>parallax effects</strong> ?<br>
+                            You already use parallax.js for its simplicity, its support for the gyroscope as well as the cursor ? Why don't you add a little more interaction with <strong>headtracking</strong> for your users via the webcam ?...<br>
+                            Just use <strong>parallax.js</strong> exactly the same way you did, only a little flag to add ...
+                        </p>
+                        <p>Headtracking support was brought to parallax.js by<br><a href="http://labs.topheman.com" target="_blank">Christophe Rosset</a>.</p>
+                        <div class="social">
+							<a href="https://twitter.com/topheman" class="twitter-follow-button" data-show-count="false">Follow <span class="handle">@topheman</span></a>
+						</div>
+						<p>The original project is a collaboration between<br><a href="http://www.wagerfield.com" target="_blank">Matthew Wagerfield</a> &amp; <a href="http://cargocollective.com/whydontwetry" target="_blank">Claudio Guglieri</a>.</p>
 						<div class="social">
 							<a href="https://twitter.com/mwagerfield" class="twitter-follow-button" data-show-count="false">Follow <span class="handle">@mwagerfield</span></a>
 							<a href="https://twitter.com/claudioguglieri" class="twitter-follow-button" data-show-count="false">Follow <span class="handle">@claudioguglieri</span></a>
@@ -173,7 +181,7 @@
 			<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://topheman.github.io/parallax/" data-count="none" data-via="topheman" data-text="Check out #parallax.js - now with #headtracking">Tweet</a>
 		</footer>
 	</div>
-
+    <div id="work-in-progress">STILL A WORK IN PROGRESS</div>
 	<!-- Scripts -->
 	<script src="assets/scripts/js/libraries.min.js"></script>
 	<script src="deploy/jquery.parallax.js"></script>
@@ -237,7 +245,15 @@
 	});
 
 	// Pretty simple huh?
-	$scene.parallax();
+	$scene.parallax({
+        headtrackrCameraFoundCallback: function(){
+            var headtrackerMessageDiv = document.getElementById('headtrackerMessageDiv');
+            //at this time, you're sure the user clicked on "allow" and the webcam is rolling (you can override the inline styles of the headtrackr div message)
+            headtrackerMessageDiv.style.top = "20%";
+            headtrackerMessageDiv.style.lineHeight = "1em";
+            console.log(headtrackerMessageDiv.style.lineHeight);
+        }
+    });
 
 	// Check for orientation support.
 	setTimeout(function() {
@@ -254,6 +270,18 @@
 			});
 		}
 	},1000);
+    
+    //work in progress flag
+    var wip = jQuery('#work-in-progress');
+    setTimeout(function(){
+        wip.fadeIn("slow", function(){
+            setTimeout(function(){
+                wip.fadeOut(2000, function(){
+                    wip.remove();
+                });
+            },2000);
+        });
+    },3000);
 
 	// Twitter stuff.
 	!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');

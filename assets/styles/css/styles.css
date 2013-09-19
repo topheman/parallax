@@ -281,7 +281,8 @@ footer {
   text-align: right;
   bottom: 0;
   right: 0;
-  left: 0; }
+  left: 0;
+  z-index: 100; }
   footer .fb-like {
     display: inline-block;
     position: absolute;
@@ -289,10 +290,7 @@ footer {
     bottom: 43px;
     right: 22px; }
   footer .twitter-share-button {
-    display: block;
-    margin-bottom: 0px;
-    margin-left: auto;
-    margin-right: auto; }
+    display: inline-block; }
 
 .accelerate {
   -webkit-transform: translate3d(0,0,0);
@@ -2158,3 +2156,22 @@ html.touch .toggle.tap .x, html.touch .toggle.tap .y {
 html.touch .links a.tap {
   background-color: #d92400;
   color: white; }
+
+#headtrackr-debug-view {
+  opacity: 0.5; }
+
+#headtrackr-display-video {
+  opacity: 0.5; }
+
+#work-in-progress {
+  font-family: "Times New Roman", Georgia, Serif;
+  font-size: 5em;
+  line-height: 1em;
+  position: absolute;
+  top: 20%;
+  left: 0px;
+  width: 100%;
+  text-align: center;
+  color: blue;
+  font-weight: bold;
+  display: none; }
