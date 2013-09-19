@@ -4,3 +4,4 @@ assets/psds
 
 /node_modules
 /nbproject
+/.sass-cache

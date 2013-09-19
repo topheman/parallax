@@ -9,11 +9,19 @@ module.exports = function(grunt) {
         // grunt-contrib-connect will serve the files of the project
         // on specified port and hostname
         connect: {
-            all: {
+            debug: {
                 options: {
                     port: 9000,
                     hostname: "0.0.0.0",
                     keepalive: true,
+                    base: ""
+                }
+            },
+            release: {
+                options: {
+                    port: 9000,
+                    hostname: "0.0.0.0",
+                    keepalive: false,//must be at false for livereload
                     base: ""
                 }
             }
@@ -22,17 +30,40 @@ module.exports = function(grunt) {
         // grunt-open will open your browser at the project's URL
         open: {
             debug: {
-                path: 'http://localhost:<%= connect.all.options.port%>/examples/simple.headtrackr.html'
+                path: 'http://localhost:<%= connect.debug.options.port%>/examples/simple.headtrackr.html'
             },
             release: {
-                path: 'http://localhost:<%= connect.all.options.port%>/'
+                path: 'http://localhost:<%= connect.release.options.port%>/'
+            }
+        },
+        
+        sass: {
+            dist: {
+                files: {
+                    'assets/styles/css/styles.css': 'assets/styles/sass/styles.sass'
+                }
+            }
+        },
+        
+        watch : {
+            options:{
+                livereload : true
+            },
+            //when the index.html file is changed, only trigger a reload
+            "dev-html": {
+                files : ['index.html']
+            },
+            //when a sass file is changed, rebuild the css
+            "dev-sass" : {
+                files : ['assets/styles/sass/**/*.sass'],
+                tasks : ['sass']
             }
         }
 
     });
 
-    grunt.registerTask('server', ['open:debug', 'connect:all']);
-    grunt.registerTask('server-debug', ['open:debug', 'connect:all']);
-    grunt.registerTask('server-release', ['open:release', 'connect:all']);
+    grunt.registerTask('server', ['open:debug', 'connect:debug']);
+    grunt.registerTask('server-debug', ['open:debug', 'connect:debug']);
+    grunt.registerTask('server-release', ['open:release', 'connect:release', 'watch']); //only watch on release
     
 };

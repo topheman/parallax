@@ -1,6 +1,6 @@
 {
   "name": "parallax",
-  "description" : "Simple package to add grunt support for development",
+  "description": "Simple package to add grunt support for development",
   "repository": {
     "type": "git",
     "url": "https://github.com/topheman/parallax"
@@ -11,6 +11,8 @@
     "matchdep": ">=0.1.1",
     "grunt": ">=0.4.0",
     "grunt-contrib-connect": ">=0.1.2",
-    "grunt-open": ">=0.2.0"
+    "grunt-open": ">=0.2.0",
+    "grunt-contrib-sass": "~0.5.0",
+    "grunt-contrib-watch": "~0.5.3"
   }
 }
