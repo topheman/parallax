@@ -277,7 +277,7 @@ button {
 
 footer {
   position: absolute;
-  padding: 17px 10px;
+  padding: 10px 10px;
   text-align: right;
   bottom: 0;
   right: 0;
@@ -289,8 +289,10 @@ footer {
     bottom: 43px;
     right: 22px; }
   footer .twitter-share-button {
-    display: inline-block;
-    margin-left: 12px; }
+    display: block;
+    margin-bottom: 0px;
+    margin-left: auto;
+    margin-right: auto; }
 
 .accelerate {
   -webkit-transform: translate3d(0,0,0);
@@ -669,12 +671,21 @@ footer {
     backface-visibility: hidden; }
 
 .title {
-  font-size: 3em;
+  font-size: 2.33333em;
   text-shadow: 0 8px 6px rgba(0, 0, 0, 0.6);
   margin-top: -0.7em;
   position: absolute;
   width: 100%;
-  top: 42%; }
+  top: 38%; }
+
+.title-plus {
+  font-size: 3em;
+  line-height: 1em;
+  text-shadow: 0 8px 6px rgba(0, 0, 0, 0.6);
+  margin-top: -0.7em;
+  position: absolute;
+  width: 100%;
+  top: 47%; }
 
 .background {
   background: url(../../images/background.jpg) no-repeat 50% 100%;
@@ -1440,6 +1451,9 @@ footer {
     bottom: 12%; }
 
   .title {
+    font-size: 2.66667em; }
+
+  .title-plus {
     font-size: 3.46667em; }
 
   .background {

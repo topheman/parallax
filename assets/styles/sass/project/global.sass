@@ -86,7 +86,7 @@ button
 
 footer
   position: absolute
-  padding: 17px 10px
+  padding: 10px 10px
   text-align: right
   bottom: 0
   right: 0
@@ -98,8 +98,10 @@ footer
     bottom: 43px
     right: 22px
   .twitter-share-button
-    display: inline-block
-    margin-left: 12px
+    display: block
+    margin-bottom: 0px
+    margin-left: auto
+    margin-right: auto
 
 
 
@@ -434,12 +436,21 @@ footer
     +backface-visibility("hidden")
 
 .title
-  font-size: font-size($MOBILE_FONT_SIZE, 36px)
+  font-size: font-size($MOBILE_FONT_SIZE, 28px)
   text-shadow: 0 8px 6px rgba($BLACK,0.6)
   margin-top: -0.7em
   position: absolute
   width: 100%
-  top: 42%
+  top: 38%
+
+.title-plus
+  font-size: font-size($MOBILE_FONT_SIZE, 36px)
+  line-height : font-size($MOBILE_FONT_SIZE, 12px)
+  text-shadow: 0 8px 6px rgba($BLACK,0.6)
+  margin-top: -0.7em
+  position: absolute
+  width: 100%
+  top: 47%
 
 .background
   background: url(#{$IMAGES_PATH}background.jpg) no-repeat 50% 100%

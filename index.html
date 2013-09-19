@@ -66,7 +66,10 @@
 			data-friction-x="0.1"
 			data-friction-y="0.1"
 			data-scalar-x="25"
-			data-scalar-y="15">
+			data-scalar-y="15"
+            data-headtrackr="true"
+            data-headtrackr-debug-view="true"
+            data-headtrackr-script-location="./deploy/headtrackr.js">
 			<li class="layer" data-depth="0.00"></li>
 			<li class="layer" data-depth="0.10"><div class="background"></div></li>
 			<li class="layer" data-depth="0.10"><div class="light orange b phase-4"></div></li>
@@ -87,6 +90,7 @@
 				</ul>
 			</li>
 			<li class="layer" data-depth="0.20"><h1 class="title">parallax<em>.js</em></h1></li>
+			<li class="layer" data-depth="0.25"><h1 class="title-plus">now with<br><em>headtracking</em> !</h1></li>
 			<li class="layer" data-depth="0.30">
 				<ul class="rope depth-30">
 					<li><img src="assets/images/rope.png" alt="Rope"></li>
@@ -134,8 +138,8 @@
 							<a href="https://twitter.com/claudioguglieri" class="twitter-follow-button" data-show-count="false">Follow <span class="handle">@claudioguglieri</span></a>
 						</div>
 						<ul class="links">
-							<li><a class="download" href="https://github.com/wagerfield/parallax/archive/master.zip">Download</a></li>
-							<li><a class="github" target="_blank" href="https://github.com/wagerfield/parallax">GitHub</a></li>
+							<li><a class="download" href="https://github.com/topheman/parallax/archive/master.zip">Download</a></li>
+							<li><a class="github" target="_blank" href="https://github.com/topheman/parallax">GitHub</a></li>
 						</ul>
 					</div>
 				</div>
@@ -237,7 +241,7 @@
 
 	// Check for orientation support.
 	setTimeout(function() {
-		if ($scene.data('mode') === 'cursor') {
+		if ($scene.data('mode') === 'cursor' || $scene.data('mode') === 'headtracking') {
 			$prompt.removeClass('hide');
 			if (window.innerWidth < 600) $toggle.addClass('hide');
 			$prompt.on('click', function(event) {
