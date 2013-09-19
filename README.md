@@ -1,12 +1,10 @@
-# Parallax.js
+# Parallax.js - *now with headtracking support*
 
-Simple, lightweight **Parallax Engine** that reacts to the orientation of a
-smart device. Where no gyroscope or motion detection hardware is available, the
-position of the cursor is used instead.
+Simple, lightweight **Parallax Engine** that reacts to the orientation of a smart device. Where no gyroscope or motion detection hardware is available, the position of the cursor is used instead.
 
-Check out this **[demo][demo]** to see it in action!
+This version is a fork by [Christophe Rosset (@topheman)](https://github.com/topheman), from the original [Parallax.js by Matthew Wagerfield](https://github.com/wagerfield/parallax). It adds **headtracking support** to the original library. See **[Headtracking Support](#headtracking-support)** section for more infos.
 
-This version is a fork by [Christophe Rosset (@topheman)](https://github.com/topheman), from the original [Parallax.js by Matthew Wagerfield](https://github.com/wagerfield/parallax). It adds headtracking support to the original library - thanks to Audun Mathias Øygard for his [headtrackr.js](https://github.com/auduno/headtrackr) library. See **[Headtracking Support](#headtracking-support)** section for more infos.
+Check out this **[demo](https://rawgithub.com/topheman/parallax/master/examples/simple.headtrackr.html)** to see it in action ! (better demo to come soon ...)
 
 ## Setup
 
@@ -153,7 +151,7 @@ $scene.parallax('friction', 0.2, 0.8);
 
 ## Headtracking support
 
-Use Parallax.js just as you would. But rather than devicemotion, use headtracking with your webcam (based on the [headtrackr.js](https://github.com/auduno/headtrackr) library).
+Use Parallax.js just as you would. But rather than devicemotion, use headtracking with your webcam. Thanks to Audun Mathias Øygard for his [headtrackr.js](https://github.com/auduno/headtrackr) library.
 
 Don't forget to insert the `headtrackr.js` or `headtrackr.min.js` script in your page or specify it in the options in `headtrackr-script-location` (for lazy load). 
 
@@ -171,6 +169,7 @@ var scene = document.getElementById('scene');
 var parallax = new Parallax(scene, {
   // … set any of the usual parallax behaviours, then set the headtrackr ones
   headtrackr:true,
+  headtrackrPreferDeviceMotion:false,//if on a device that supports both getUserMedia and accelerometer, false -> will use headtrackr, true -> will use DeviceMotion (true by default to keep with parallax.js)
   scalarX: 15.0,
   scalarY: 15.0,
 //  headtrackrDisplayVideo:true, //no need if you set headtrackrDebugView at true
@@ -198,6 +197,7 @@ parallax.headtrackrScalar(2, 8);
 $('#scene').parallax({
   // … set any of the usual parallax behaviours, then set the headtrackr ones
   headtrackr:true,
+  headtrackrPreferDeviceMotion:false,//if on a device that supports both getUserMedia and accelerometer, false -> will use headtrackr, true -> will use DeviceMotion (true by default to keep with parallax.js)
   scalarX: 15.0,
   scalarY: 15.0,
 //  headtrackrDisplayVideo:true, //no need if you set headtrackrDebugView at true
@@ -220,14 +220,17 @@ $scene.parallax('headtrackrScalar', 2, 8);
 
 ### Headtracking behaviours
 
-| Behavior                    | Values              | Description                                                                                                                                                      |
-| --------------------------- | ------------------- | -----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `headtrackr`                | `true` or `false`   | Activates headtracking in parallax (you will be asked to allow the access to your webcam) - it disables devicemotion events and uses mouse if headtracking fails |              
-| `headtrackr-display-video`  | `true` or `false`   | Specifies whether or not to display the webcam video stream (`false` by default)                                                                                 |
-| `headtrackr-scalar-x`       | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-x)                                                                     |
-| `headtrackr-scalar-y`       | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-y)                                                                     |
-| `headtrackr-debug-view`     | `true` or `false`   | Specifies whether or not to display the webcam video stream, with a box over your head (great for debugging) (`false` by default)                                |
-| `headtrackr-script-location`| `string`            | Location of the `headtrackr.js` or `headtrackr.min.js` script (lazy load for feature detection)                                                                  |
+Keep in mind that to activate headtracking **you only have to put `headtrackr` option to `true`**, the other parameters are optional (except `headtrackr-script-location`, unless you already have included the `headtrackr.js` script).
+
+| Behavior                         | Values              | Description                                                                                                                                                      |
+| -------------------------------- | ------------------- | -----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `headtrackr`                     | `true` or `false`   | Activates headtracking in parallax (you will be asked to allow the access to your webcam) - it disables devicemotion events and uses mouse if headtracking fails |              
+| `headtrackr-display-video`       | `true` or `false`   | Specifies whether or not to display the webcam video stream (`false` by default)                                                                                 |
+| `headtrackr-scalar-x`            | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-x)                                                                     |
+| `headtrackr-scalar-y`            | `number`            | Multiplies the input motion given by headtrackr by this value (will be affected by scalar-y)                                                                     |
+| `headtrackr-debug-view`          | `true` or `false`   | Specifies whether or not to display the webcam video stream, with a box over your head (great for debugging) (`false` by default)                                |
+| `headtrackr-script-location`     | `string`            | Location of the `headtrackr.js` or `headtrackr.min.js` script (lazy load for feature detection)                                                                  |
+| `headtrackr-prefer-device-motion`| `true` or `false`   | If both accelerometer and headtracking are supported (like on tablets with chrome that support getUserMedia), choose which one use, `true` by default            |
 
 ## iOS
 
@@ -270,16 +273,17 @@ npm install
 node build.js
 ```
 
-## Author
+## Authors
 
-Matthew Wagerfield: [@mwagerfield][twitter]
+* Matthew Wagerfield: [@mwagerfield](http://twitter.com/mwagerfield)
+* Christophe Rosset: [@topheman](http://twitter.com/topheman)
 
 ## License
 
 Licensed under [MIT][mit]. Enjoy.
 
-[demo]: http://wagerfield.github.com/parallax/
-[twitter]: http://twitter.com/mwagerfield
+[demo]: http://topheman.github.io/parallax/
 [mit]: http://www.opensource.org/licenses/mit-license.php
 [jquery]: http://jquery.com/
 [zepto]: http://zeptojs.com/
+[headtrackr]: https://github.com/auduno/headtrackr
