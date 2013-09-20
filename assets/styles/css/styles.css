@@ -2157,14 +2157,11 @@ html.touch .links a.tap {
   background-color: #d92400;
   color: white; }
 
-#headtrackr-debug-view {
-  opacity: 0.5; }
-
 #headtrackr-display-video {
   opacity: 0.5; }
 
 #work-in-progress {
-  font-family: "Times New Roman", Georgia, Serif;
+  font-family: Helevetica Neue, Arial, sans-serif;
   font-size: 5em;
   line-height: 1em;
   position: absolute;
@@ -2172,6 +2169,7 @@ html.touch .links a.tap {
   left: 0px;
   width: 100%;
   text-align: center;
-  color: blue;
-  font-weight: bold;
-  display: none; }
+  color: white;
+  font-weight: light;
+  display: none;
+  text-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5); }
