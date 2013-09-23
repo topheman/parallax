@@ -243,6 +243,11 @@
       this.htrackr.canvasDebug = canvasDebug;
       this.htrackr.ctxDebug = canvasDebug.getContext('2d');
     }
+    
+    //callback to be used to display a "please allow your webcam" for example
+    if(typeof(this.headtrackrOnBeforeCameraAccess) === "function"){
+      this.headtrackrOnBeforeCameraAccess();
+    }
 
     this.htrackr.init(inputVideo, canvasInput);
     this.htrackr.start();
@@ -257,8 +262,8 @@
     document.addEventListener('headtrackrStatus', function(e){
       console.log(e.status,e.type,e.timeStamp);
       if(e.status === "camera found"){
-        if(typeof(self.headtrackrCameraFoundCallback) === "function"){
-          self.headtrackrCameraFoundCallback();
+        if(typeof(self.headtrackrOnCameraFound) === "function"){
+          self.headtrackrOnCameraFound();
         }
       }
       else if(e.status === "found"){
