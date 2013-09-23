@@ -180,7 +180,10 @@ var parallax = new Parallax(scene, {
   invertX:false,
   invertY:false,
   headtrackrScriptLocation: "../deploy/headtrackr.min.js",
-  headtrackrCameraFoundCallback: function(){
+  headtrackrOnBeforeCameraAccess: function(){
+    console.log('Trying to access to your webcam - this is where you could display a "please allow your webcam" message for example');
+  },
+  headtrackrOnCameraFound: function(){
     var headtrackerMessageDiv = document.getElementById('headtrackerMessageDiv');
     //at this time, you're sure the user clicked on "allow" and the webcam is rolling (you can override the inline styles of the headtrackr div message)
     headtrackerMessageDiv.style.top = "20%";
@@ -213,7 +216,10 @@ $('#scene').parallax({
   invertX:false,
   invertY:false,
   headtrackrScriptLocation: "../deploy/headtrackr.min.js",
-  headtrackrCameraFoundCallback: function(){
+  headtrackrOnBeforeCameraAccess: function(){
+    console.log('Trying to access to your webcam - this is where you could display a "please allow your webcam" message for example');
+  },
+  headtrackrOnCameraFound: function(){
     var headtrackerMessageDiv = document.getElementById('headtrackerMessageDiv');
     //at this time, you're sure the user clicked on "allow" and the webcam is rolling (you can override the inline styles of the headtrackr div message)
     headtrackerMessageDiv.style.top = "20%";
