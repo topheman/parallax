@@ -2173,3 +2173,59 @@ html.touch .links a.tap {
   font-weight: light;
   display: none;
   text-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5); }
+
+#allow-message {
+  display: none;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  top: 5px;
+  font-family: "Roboto Slab", sans-serif; }
+  #allow-message span:before {
+    content: "\21E7";
+    margin-right: 20px;
+    font-size: 30px;
+    display: block;
+    -webkit-animation: allow-message-arrow 1.2s infinite linear;
+    -moz-animation: allow-message-arrow 1.2s infinite linear;
+    animation: allow-message-arrow 1.2s infinite linear; }
+
+@-webkit-keyframes allow-message-arrow {
+  0% {
+    margin-top: 0px; }
+
+  50% {
+    margin-top: 20px; }
+
+  100% {
+    margin-top: 0px; } }
+
+@-moz-keyframes allow-message-arrow {
+  0% {
+    margin-top: 0px; }
+
+  50% {
+    margin-top: 20px; }
+
+  100% {
+    margin-top: 0px; } }
+
+@-ms-keyframes allow-message-arrow {
+  0% {
+    margin-top: 0px; }
+
+  50% {
+    margin-top: 20px; }
+
+  100% {
+    margin-top: 0px; } }
+
+@keyframes allow-message-arrow {
+  0% {
+    margin-top: 0px; }
+
+  50% {
+    margin-top: 20px; }
+
+  100% {
+    margin-top: 0px; } }

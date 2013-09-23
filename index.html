@@ -133,7 +133,7 @@
 						</header>
 						<p>
                             You like <strong>parallax effects</strong> ?<br>
-                            You already use parallax.js for its simplicity, its support for the gyroscope as well as the cursor ? Why don't you add a little more interaction with <strong>headtracking</strong> for your users via the webcam ?...<br>
+                            You already use parallax.js for its simplicity, its support for the gyroscope as well as the cursor ? Why don't you add a little more interaction with <strong>headtracking</strong> support for your users via the webcam ?...<br>
                             Just use <strong>parallax.js</strong> exactly the same way you did, only a little flag to add ...
                         </p>
                         <p>Headtracking support was brought to parallax.js by<br><a href="http://labs.topheman.com" target="_blank">Christophe Rosset</a>.</p>
@@ -171,9 +171,9 @@
 					<div class="tilt-scene">
 						<img class="tilt" src="assets/images/tilt.png">
 					</div>
-					<h2>Tilting is fun!</h2>
+					<h2>Tilting is also fun!</h2>
 					<p>For the best experience, check out this site on a mobile or tablet equipped with a gyroscope</p>
-					<p>(iPads are the coolest)</p>
+					<p>(this headtracking feature is fully retrocompatible)</p>
 				</div>
 			</div>
 		</div>
@@ -181,7 +181,7 @@
 			<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://topheman.github.io/parallax/" data-count="none" data-via="topheman" data-text="Check out #parallax.js - now with #headtracking">Tweet</a>
 		</footer>
 	</div>
-    <div id="work-in-progress">STILL A WORK IN PROGRESS</div>
+    <div id="allow-message"><span>Click "Allow" to give access to your webcam and play with headtracking</span></div>
 	<!-- Scripts -->
 	<script src="assets/scripts/js/libraries.min.js"></script>
 	<script src="deploy/jquery.parallax.js"></script>
@@ -246,7 +246,13 @@
 
 	// Pretty simple huh?
 	$scene.parallax({
-        headtrackrCameraFoundCallback: function(){
+        headtrackrOnBeforeCameraAccess: function(){
+            var allowMessage = document.getElementById('allow-message');
+            allowMessage.style.display = 'block';
+        },
+        headtrackrOnCameraFound: function(){
+            var allowMessage = document.getElementById('allow-message');
+            allowMessage.style.display = 'none';
             var headtrackerMessageDiv = document.getElementById('headtrackerMessageDiv');
             //at this time, you're sure the user clicked on "allow" and the webcam is rolling (you can override the inline styles of the headtrackr div message)
             headtrackerMessageDiv.style.top = "20%";
@@ -270,18 +276,6 @@
 			});
 		}
 	},1000);
-    
-    //work in progress flag
-    var wip = jQuery('#work-in-progress');
-    setTimeout(function(){
-        wip.fadeIn("slow", function(){
-            setTimeout(function(){
-                wip.fadeOut(2000, function(){
-                    wip.remove();
-                });
-            },2000);
-        });
-    },3000);
 
 	// Twitter stuff.
 	!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
@@ -303,6 +297,16 @@
   })();
 
 </script>
-<script src="http://localhost:35729/livereload.js"></script>
+<script type="text/javascript">
+  //liverelod - only used under developpement
+  (function(){
+    var s;
+    if(window.location.hostname.indexOf('localhost') > -1){
+      s = document.createElement('script');
+      s.src = "http://localhost:35729/livereload.js";
+      document.getElementsByTagName('body')[0].appendChild(s);
+    }
+  })();
+</script>
 </body>
 </html>
