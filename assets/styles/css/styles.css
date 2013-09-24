@@ -211,7 +211,7 @@ table {
 
 html {
   font-family: "Roboto Slab", sans-serif;
-  font-size: 12px; }
+  font-size: 11px; }
 
 body {
   -webkit-font-smoothing: antialiased;
@@ -227,10 +227,10 @@ h1, h2, h3 {
   margin: 0; }
 
 h1 {
-  font-size: 2.83333em; }
+  font-size: 3.09091em; }
 
 h2 {
-  font-size: 2.33333em; }
+  font-size: 2.54545em; }
 
 p {
   margin: 0 0 1.4em; }
@@ -261,7 +261,7 @@ button {
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding-box;
   background-clip: padding-box;
-  font-size: 1.33333em;
+  font-size: 1.45455em;
   line-height: 45.6px;
   font-family: "Dosis", sans-serif;
   background-color: #f2f2f2;
@@ -508,7 +508,7 @@ footer {
             background-clip: padding-box; }
       .about .panel .links a {
         -webkit-font-smoothing: antialiased;
-        font-size: 1.33333em;
+        font-size: 1.45455em;
         font-family: "Dosis", sans-serif;
         text-transform: uppercase;
         font-weight: 600;
@@ -624,7 +624,7 @@ footer {
   .prompt .panel h2 {
     margin: 0 0 0.4em; }
   .prompt .panel p {
-    font-size: 1.25em;
+    font-size: 1.36364em;
     margin: 0 10% 1.25em;
     line-height: 1.25em;
     color: #999999; }
@@ -669,7 +669,7 @@ footer {
     backface-visibility: hidden; }
 
 .title {
-  font-size: 2.33333em;
+  font-size: 2.54545em;
   text-shadow: 0 8px 6px rgba(0, 0, 0, 0.6);
   margin-top: -0.7em;
   position: absolute;
@@ -677,8 +677,8 @@ footer {
   top: 38%; }
 
 .title-plus {
-  font-size: 3em;
-  line-height: 1em;
+  font-size: 3.27273em;
+  line-height: 1.09091em;
   text-shadow: 0 8px 6px rgba(0, 0, 0, 0.6);
   margin-top: -0.7em;
   position: absolute;
@@ -1092,6 +1092,23 @@ footer {
     -moz-transform: scale(0.5);
     transform: scale(0.5); }
 
+@media all and (max-width: 400px) {
+  .about .panel header:before {
+    background-size: 55px 75px; }
+  .about .panel header h1 {
+    font-size: 1.7em; }
+  .about .panel p, .about .panel .social {
+    margin: 0 2% 0.5em; }
+  .about .panel .twitter-follow-button {
+    margin-bottom: 0.2em; }
+
+  footer .twitter-share-button {
+    position: absolute;
+    right: 2px;
+    bottom: 52px; }
+
+  button.toggle {
+    bottom: 15%; } }
 @media all and (min-width: 400px) {
   html {
     font-size: 12px; }
