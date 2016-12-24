@@ -4,7 +4,7 @@ Simple, lightweight **Parallax Engine** that reacts to the orientation of a smar
 
 This version is a fork by [Christophe Rosset (@topheman)](https://github.com/topheman), from the original [Parallax.js by Matthew Wagerfield](https://github.com/wagerfield/parallax). It adds **headtracking support** to the original library. See **[Headtracking Support](#headtracking-support)** section for more infos.
 
-Check out this **[demo](http://topheman.github.io/parallax/)** to see it in action !
+Check out this **[demo](https://topheman.github.io/parallax/)** to see it in action !
 
 ## Setup
 
@@ -162,7 +162,7 @@ You can test the headtracking version of the simple demo here :
 * [with Parallax](https://rawgithub.com/topheman/parallax/master/examples/simple.headtrackr.html)
 * [with the Parallax jQuery plugin](https://rawgithub.com/topheman/parallax/master/examples/jquery.headtrackr.html)
 
-See also the real **[demo](http://topheman.github.io/parallax/)**.
+See also the real **[demo](https://topheman.github.io/parallax/)**.
 
 
 ### Headtracking - Behaviors: Constructor Object Example
@@ -301,7 +301,7 @@ node build.js
 
 Licensed under [MIT][mit]. Enjoy.
 
-[demo]: http://topheman.github.io/parallax/
+[demo]: https://topheman.github.io/parallax/
 [mit]: http://www.opensource.org/licenses/mit-license.php
 [jquery]: http://jquery.com/
 [zepto]: http://zeptojs.com/
